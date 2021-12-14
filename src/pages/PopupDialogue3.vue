@@ -42,41 +42,41 @@
             </v-toolbar-items>
           </v-toolbar>
           <div class="listContainer">
-            <v-list class="miskit"
+            <v-list class="miskit3"
                 subheader
             >
               <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Mis materjaliga on tegu? {{ loading }} </v-list-item-title>
-                    <v-autocomplete
-                        v-model="value"
-                        :rules="[rules.required]"
-                        :items="categories"
-                        dense
-                    />
-                </v-list-item-content>
+                <v-text-field style="margin-top: 50px"
+                      v-model="value"
+                      :rules="[rules.required]"
+                      label="Pealkiri"
+                      counter
+                      maxlength="30"
+                />
               </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>Mis kujul see olemas on?</v-list-item-title>
-                    <v-autocomplete
-                        v-model="value2"
-                        :items="items"
-                        dense
-                    />
-                </v-list-item-content>
+
+              <v-list-item style="margin-top: 10px">
+                <v-text-field
+                              v-model="value2"
+                              :rules="[rules.required]"
+                              label="Kuulutuse tekst"
+                              counter
+                              maxlength="250"
+                />
               </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Materjalisaadavus</v-list-item-title>
-                      <v-autocomplete
-                          v-model="value3"
-                          :rules="[rules.required]"
-                          :items="['Lõplik kogus', 'Tekib jooksvalt juurde']"
-                          dense
-                      />
-                    </v-list-item-content>
-              </v-list-item>
+
+              <v-combobox style="padding: 8px 0px"
+                          multiple
+                          v-model="select"
+                          label="Märksõnad"
+                          append-icon
+                          chips
+                          deletable-chips
+                          class="tag-input"
+                          :search-input.sync="search"
+                          @keyup.tab="updateTags"
+                          @paste="updateTags">
+              </v-combobox>
             </v-list>
 
             <img :scr="image"/>
@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  name: "PopupDialogue",
+  name: "PopupDialogue3",
   data () {
     return {
       loading: false,
@@ -113,23 +113,21 @@ export default {
       rules: {
         required: value => !!value || 'Required.',
       },
+      title: '',
+      text: '',
     }
   },
   methods: {
-    getCategories () {
-      console.log("REQUESTING")
-      this.$http.get('api/listing/categories')
-          .then (result => {
-            console.log('RES', result)
-            this.categories = result.data
-          })
-      .catch(e => console.log('ERROR', e))
+    getTags () {
+      this.$http.get('api/listing/tags')
+          .then (result => this.tags = result.data)
     },
-
   },
-  beforeMount() {
-    this.getCategories();
-  },
+  // beforeMount() {
+  //   const categories = this.getCategories();
+  //   console.log('HERE')
+  //   this.categories = categories;
+  // },
   created() {
     console.log('CREATED')
   }
@@ -138,7 +136,7 @@ export default {
 
 <style scoped>
 
-.miskit {
+.miskit3 {
   padding: 0 50px 100px 50px;
 }
 

@@ -2,6 +2,8 @@
   <v-app class="grey lighten-4">
     <Navbar/>
     <PopupDialogue/>
+    <PopupDialogue3/>
+
    <v-main>
      <router-view></router-view>
    </v-main>
@@ -12,10 +14,11 @@
 <script>
 import Navbar from "./components/layout/Navbar";
 import PopupDialogue from "./pages/PopupDialogue1";
+import PopupDialogue3 from "./pages/PopupDialogue3";
 
 export default {
   name: 'App',
-  components: {PopupDialogue, Navbar},
+  components: {PopupDialogue, PopupDialogue3, Navbar},
 
   data () {
     return {
