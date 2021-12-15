@@ -85,6 +85,14 @@
                           label="Soodushind"
                       ></v-text-field>
                     </v-col>€
+
+                    <v-text-field
+                        label="Allahindlus %"
+                    ></v-text-field>%
+                    <v-text-field
+                        label="Soodushind"
+                    ></v-text-field>
+
                     <v-text-field
                         label="Allahindlus %"
                     ></v-text-field>%
