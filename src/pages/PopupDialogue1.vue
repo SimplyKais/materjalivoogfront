@@ -58,10 +58,10 @@
               </v-list-item>
               <v-list-item style="margin-top: 50px">
                 <v-list-item-content>
-                  <v-list-item-title>Mis kujul see olemas on?</v-list-item-title>
+                  <v-list-item-title>Mis kujul see olemas on? {{ loading }} </v-list-item-title>
                     <v-autocomplete
                         v-model="value2"
-                        :items="items"
+                        :items="subcategories"
                         dense
                     />
                 </v-list-item-content>
@@ -110,6 +110,7 @@ export default {
       items: [],
       image: '',
       categories: [],
+      subcategories: [],
       rules: {
         required: value => !!value || 'Required.',
       },
@@ -125,14 +126,31 @@ export default {
           })
       .catch(e => console.log('ERROR', e))
     },
-
   },
   beforeMount() {
     this.getCategories();
   },
   created() {
     console.log('CREATED')
-  }
+  },
+
+  getSubcategories () {
+    console.log("REQUESTING")
+    this.$http.get('api/listing/subcategories')
+        .then (result => {
+          console.log('RES', result)
+          this.subcategories = result.data
+        })
+        .catch(e => console.log('ERROR', e))
+  },
+
+  beforeMount2() {
+    this.getSubcategories();
+  },
+  created2() {
+    console.log('CREATED')
+  },
+
 }
 </script>
 
