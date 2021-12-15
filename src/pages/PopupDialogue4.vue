@@ -51,23 +51,25 @@
                     <v-col
                         cols="12"
                         sm="6"
-                        md="3"
+                        md="5"
                     >
-                      <v-text-field
-                          label="Hind"
-                      ></v-text-field>
-                    </v-col>
-                    €
+                    <v-text-field
+                        v-model="price"
+                        :rules="[rules.required]"
+                        label="Hind"
+                    ></v-text-field>
+                    </v-col>€
+
                     <v-col
-                        cols="12"
+                        cols="120"
                         sm="6"
-                        md="3"
+                        md="5"
                     >
                     <v-list-item>
                       <v-list-item-content>
                         <v-list-item-title>* Ühik</v-list-item-title>
                         <v-autocomplete
-                            v-model="value3"
+                            v-model="value"
                             :rules="[rules.required]"
                             :items="['/m', '/kg']"
                             dense
@@ -76,34 +78,63 @@
                     </v-list-item>
                     </v-col>
 
+                    Miinimumhind 5€ <br>
+                    Hinnale lisandub KM Platvormi teenustasu -10%
+
+                    <v-list-item style="margin-top: 50px">
+                    <v-text-field style="margin-top: 50px"
+                                  v-model="value2"
+                                  label="Lisainfo"
+                                  counter
+                                  maxlength="200"
+                    ></v-text-field>
+                      </v-list-item>
                     <v-col
                         cols="12"
                         sm="6"
-                        md="3"
+                        md="5"
                     >
                       <v-text-field
                           label="Soodushind"
                       ></v-text-field>
                     </v-col>€
 
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="5">
                     <v-text-field
                         label="Allahindlus %"
-                    ></v-text-field>%
+                    ></v-text-field>
+                    </v-col>%
 
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="5">
                     <v-text-field
                         label="Laojääk"
                     ></v-text-field>
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-list-item-title>Laoseis</v-list-item-title>
-                        <v-autocomplete
-                            v-model="value3"
-                            :rules="[rules.required]"
-                            :items="['laos', 'otsas', 'järeltellimisel']"
-                            dense
-                        />
-                      </v-list-item-content>
-                    </v-list-item>
+                    </v-col>
+
+
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="5"
+                    >
+                      <v-list-item>
+                        <v-list-item-content>
+                          <v-list-item-title>Laoseis</v-list-item-title>
+                          <v-autocomplete
+                              v-model="value3"
+                              :rules="[rules.required]"
+                              :items="['laos', 'otsas', 'järeltellimisel']"
+                              dense
+                          />
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-col>
                   </v-row>
                 </v-container>
               </v-form>
@@ -136,13 +167,12 @@ export default {
       dialog: '',
       value: '',
       value2: '',
-      value3: '',
       items: [],
       image: '',
       categories: [],
       subcategories: [],
       rules: {
-        required: value => !!value || 'Required.',
+        required: value => !!value || 'Kohustuslik',
       },
     }
   },

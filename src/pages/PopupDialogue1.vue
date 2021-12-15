@@ -140,7 +140,7 @@ export default {
       this.$http.get(`api/listing/selectsubcategories/${id}`)
           .then(result => {
             console.log('RES', result)
-            this.subcategories = result.data.map(subcategory => subcategory)
+            this.subcategories = result.data.map(item => item.name)
           })
           .catch(e => console.log('ERROR', e))
     },
