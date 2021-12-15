@@ -17,7 +17,7 @@
               v-bind="attrs"
               v-on="on"
           >
-            3.leht (pealkiri)
+            4. leht (hinnakava)
           </v-btn>
         </template>
         <v-card>
@@ -42,41 +42,41 @@
             </v-toolbar-items>
           </v-toolbar>
           <div class="listContainer">
-            <v-list class="miskit3"
+            <v-list class="miskit"
                 subheader
             >
               <v-list-item style="margin-top: 50px">
-                <v-text-field style="margin-top: 50px"
-                      v-model="value"
-                      :rules="[rules.required]"
-                      label="Pealkiri"
-                      counter
-                      maxlength="30"
-                />
+                <v-list-item-content>
+                  <v-list-item-title>* Mis materjaliga on tegu? {{ loading }} </v-list-item-title>
+                    <v-autocomplete
+                        v-model="value"
+                        :rules="[rules.required]"
+                        :items="categories"
+                        dense
+                    />
+                </v-list-item-content>
               </v-list-item>
-
-              <v-list-item style="margin-top: 10px">
-                <v-text-field
-                              v-model="value2"
-                              :rules="[rules.required]"
-                              label="Kuulutuse tekst"
-                              counter
-                              maxlength="250"
-                />
+              <v-list-item style="margin-top: 50px">
+                <v-list-item-content>
+                  <v-list-item-title>Mis kujul see olemas on? {{ loading }} </v-list-item-title>
+                    <v-autocomplete
+                        v-model="value2"
+                        :items="subcategories"
+                        dense
+                    />
+                </v-list-item-content>
               </v-list-item>
-
-              <v-combobox style="padding: 8px 0px"
-                          multiple
-                          v-model="select"
-                          label="Märksõnad"
-                          append-icon
-                          chips
-                          deletable-chips
-                          class="tag-input"
-                          :search-input.sync="search"
-                          @keyup.tab="updateTags"
-                          @paste="updateTags">
-              </v-combobox>
+              <v-list-item style="margin-top: 50px">
+                <v-list-item-content>
+                  <v-list-item-title>* Materjalisaadavus</v-list-item-title>
+                      <v-autocomplete
+                          v-model="value3"
+                          :rules="[rules.required]"
+                          :items="['Lõplik kogus', 'Tekib jooksvalt juurde']"
+                          dense
+                      />
+                    </v-list-item-content>
+              </v-list-item>
             </v-list>
 
             <img :scr="image"/>
@@ -99,7 +99,7 @@
 
 <script>
 export default {
-  name: "PopupDialogue3",
+  name: "PopupDialogue",
   data () {
     return {
       loading: false,
@@ -110,37 +110,53 @@ export default {
       items: [],
       image: '',
       categories: [],
-      select: '',
-      search: '',
-      updateTags: '',
+      subcategories: [],
       rules: {
-
         required: value => !!value || 'Required.',
       },
-      title: '',
-      text: '',
     }
   },
   methods: {
-    getTags () {
-      this.$http.get('api/listing/tags')
-          .then (result => this.tags = result.data)
+    getCategories () {
+      console.log("REQUESTING")
+      this.$http.get('api/listing/categories')
+          .then (result => {
+            console.log('RES', result)
+            this.categories = result.data
+          })
+      .catch(e => console.log('ERROR', e))
     },
   },
-  // beforeMount() {
-  //   const categories = this.getCategories();
-  //   console.log('HERE')
-  //   this.categories = categories;
-  // },
+  beforeMount() {
+    this.getCategories();
+  },
   created() {
     console.log('CREATED')
-  }
+  },
+
+  getSubcategories () {
+    console.log("REQUESTING")
+    this.$http.get('api/listing/subcategories')
+        .then (result => {
+          console.log('RES', result)
+          this.subcategories = result.data
+        })
+        .catch(e => console.log('ERROR', e))
+  },
+
+  beforeMount2() {
+    this.getSubcategories();
+  },
+  created2() {
+    console.log('CREATED')
+  },
+
 }
 </script>
 
 <style scoped>
 
-.miskit3 {
+.miskit {
   padding: 0 50px 100px 50px;
 }
 
