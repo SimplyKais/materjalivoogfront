@@ -45,38 +45,67 @@
             <v-list class="miskit"
                 subheader
             >
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Mis materjaliga on tegu? {{ loading }} </v-list-item-title>
-                    <v-autocomplete
-                        v-model="value"
-                        :rules="[rules.required]"
-                        :items="categories"
-                        dense
-                    />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>Mis kujul see olemas on? {{ loading }} </v-list-item-title>
-                    <v-autocomplete
-                        v-model="value2"
-                        :items="subcategories"
-                        dense
-                    />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Materjalisaadavus</v-list-item-title>
-                      <v-autocomplete
-                          v-model="value3"
-                          :rules="[rules.required]"
-                          :items="['Lõplik kogus', 'Tekib jooksvalt juurde']"
-                          dense
-                      />
-                    </v-list-item-content>
-              </v-list-item>
+              <v-form>
+                <v-container>
+                  <v-row>
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="3"
+                    >
+                      <v-text-field
+                          label="Hind"
+                      ></v-text-field>
+                    </v-col>
+                    €
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="3"
+                    >
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>* Ühik</v-list-item-title>
+                        <v-autocomplete
+                            v-model="value3"
+                            :rules="[rules.required]"
+                            :items="['/m', '/kg']"
+                            dense
+                        />
+                      </v-list-item-content>
+                    </v-list-item>
+                    </v-col>
+
+                    <v-col
+                        cols="12"
+                        sm="6"
+                        md="3"
+                    >
+                      <v-text-field
+                          label="Soodushind"
+                      ></v-text-field>
+                    </v-col>€
+                    <v-text-field
+                        label="Allahindlus %"
+                    ></v-text-field>%
+
+                    <v-text-field
+                        label="Laojääk"
+                    ></v-text-field>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>Laoseis</v-list-item-title>
+                        <v-autocomplete
+                            v-model="value3"
+                            :rules="[rules.required]"
+                            :items="['laos', 'otsas', 'järeltellimisel']"
+                            dense
+                        />
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-row>
+                </v-container>
+              </v-form>
             </v-list>
 
             <img :scr="image"/>
@@ -99,7 +128,7 @@
 
 <script>
 export default {
-  name: "PopupDialogue",
+  name: "PopupDialogue4",
   data () {
     return {
       loading: false,

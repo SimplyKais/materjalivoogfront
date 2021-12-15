@@ -47,18 +47,19 @@
             >
               <v-list-item style="margin-top: 50px">
                 <v-list-item-content>
-                  <v-list-item-title>* Mis materjaliga on tegu? {{ loading }} </v-list-item-title>
+                  <v-list-item-title>* Mis materjaliga on tegu? </v-list-item-title>
                     <v-autocomplete
-                        v-model="value"
+                        v-model="material"
                         :rules="[rules.required]"
                         :items="categories"
                         dense
+                        @change="getSubcategories()"
                     />
                 </v-list-item-content>
               </v-list-item>
               <v-list-item style="margin-top: 50px">
                 <v-list-item-content>
-                  <v-list-item-title>Mis kujul see olemas on? {{ loading }} </v-list-item-title>
+                  <v-list-item-title>Mis kujul see olemas on? </v-list-item-title>
                     <v-autocomplete
                         v-model="value2"
                         :items="subcategories"
@@ -104,7 +105,7 @@ export default {
     return {
       loading: false,
       dialog: '',
-      value: '',
+      material: '',
       value2: '',
       value3: '',
       items: [],
@@ -116,42 +117,39 @@ export default {
       },
     }
   },
-  methods: {
-    getCategories () {
-      console.log("REQUESTING")
-      this.$http.get('api/listing/categories')
-          .then (result => {
-            console.log('RES', result)
-            this.categories = result.data
-          })
-      .catch(e => console.log('ERROR', e))
-    },
-  },
   beforeMount() {
     this.getCategories();
   },
   created() {
     console.log('CREATED')
   },
+  methods: {
+    getCategories() {
+      console.log("REQUESTING")
+      this.$http.get('api/listing/categories')
+          .then(result => {
+            console.log('RES', result)
+            this.categories = result.data
+          })
+          .catch(e => console.log('ERROR', e))
+    },
+    getSubcategories() {
+      console.log("REQUESTING subcategories", this.material)
 
-  getSubcategories () {
-    console.log("REQUESTING")
-    this.$http.get('api/listing/subcategories')
-        .then (result => {
-          console.log('RES', result)
-          this.subcategories = result.data
-        })
-        .catch(e => console.log('ERROR', e))
-  },
-
-  beforeMount2() {
-    this.getSubcategories();
-  },
-  created2() {
-    console.log('CREATED')
-  },
-
+      const id = this.categories.indexOf(this.material) + 1;
+      this.$http.get(`api/listing/selectsubcategories/${id}`)
+          .then(result => {
+            console.log('RES', result)
+            this.subcategories = result.data.map(subcategory => subcategory)
+          })
+          .catch(e => console.log('ERROR', e))
+    },
+  }
 }
+
+//boolean 3. küss
+
+
 </script>
 
 <style scoped>

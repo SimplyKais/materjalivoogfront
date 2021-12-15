@@ -59,12 +59,17 @@
               <v-list-item style="margin-top: 50px">
                 <v-list-item-content>
                   <v-list-item-title>* Kohaletoimetamine </v-list-item-title>
-                    <v-autocomplete
-                        v-model="value2"
-                        :rules="[rules.required]"
-                        :items="['Tulen ise järele', 'Soovin saadetisena']"
-                        dense
-                    />
+                  <p>{{ selected }}</p>
+                  <v-checkbox
+                      v-model="selected"
+                      label="Järeletulemisega"
+                      value="Pickup"
+                  ></v-checkbox>
+                  <v-checkbox
+                      v-model="selected"
+                      label="Saatmisega"
+                      value="Shipping"
+                  ></v-checkbox>
                 </v-list-item-content>
               </v-list-item>
                 <v-list-item style="margin-top: 50px">
@@ -80,7 +85,6 @@
 
             <img :scr="image"/>
 
-
               <v-btn elevation="2" x-large class="blue-grey darken-4 white--text automargin">
                 <v-icon>mdi-chevron-left</v-icon>
                 <span>Tagasi</span>
@@ -89,7 +93,6 @@
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </div>
-
         </v-card>
       </v-dialog>
     </v-row>
@@ -98,7 +101,7 @@
 
 <script>
 export default {
-  name: "PopupDialogue",
+  name: "PopupDialogue5",
   data () {
     return {
       loading: false,
@@ -108,48 +111,30 @@ export default {
       value3: '',
       items: [],
       image: '',
-      categories: [],
-      subcategories: [],
+      region: [],
+      transport: [],
       rules: {
         required: value => !!value || 'Required.',
       },
     }
   },
   methods: {
-    getCategories () {
+    getRegion () {
       console.log("REQUESTING")
-      this.$http.get('api/listing/categories')
+      this.$http.get('api/listing/region')
           .then (result => {
             console.log('RES', result)
-            this.categories = result.data
+            this.region = result.data
           })
       .catch(e => console.log('ERROR', e))
     },
   },
   beforeMount() {
-    this.getCategories();
+    this.getRegion();
   },
   created() {
     console.log('CREATED')
   },
-
-  getSubcategories () {
-    console.log("REQUESTING")
-    this.$http.get('api/listing/subcategories')
-        .then (result => {
-          console.log('RES', result)
-          this.subcategories = result.data
-        })
-        .catch(e => console.log('ERROR', e))
-  },
-
-  beforeMount2() {
-    this.getSubcategories();
-  },
-  created2() {
-    console.log('CREATED')
-  },
-
 }
 </script>
 
