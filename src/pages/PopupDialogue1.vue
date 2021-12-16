@@ -332,6 +332,9 @@ export default {
       forthDialogCompleted: false,
       fifthDialogCompleted: false,
       isProceedingDisabled: true,
+      select: '',
+      updateTags: '',
+      search: '',
       dialog: '',
       valueOfCategory: '',
       valueOfSubcategory: '',
@@ -391,11 +394,25 @@ export default {
       alert("Andmed salvestamata! Oled kindel, et soovid lahkuda lehelt?");
     },
 
-    // createListing() {
-    //   console.log("POST DATA")
-    //   const res = this.$http.post('api/listing/create/pg1/{listing_id}');
-    //
-    // },
+    createListing() {
+      const data = {
+        category: this.valueOfCategory,
+        subcategory: this.valueOfSubcategory,
+        deadStock: !!this.valueOfDeadstock,
+      };
+      console.log("POST DATA", data)
+      this.$http.post('api/listing/create/pg1', data);
+    },
+
+    updateListingPg1() {
+      console.log("PUT DATA")
+      this.$http.put('api/listing/create/pg1/' + this.valueOfCategory + '/' + this.valueOfSubcategory  + '/' + this.valueOfDeadstock, {
+        category: this.valueOfCategory,
+        subcategory: this.valueOfSubcategory,
+        deadStock: !!this.valueOfDeadstock,
+      });
+    },
+
 
     getTags () {
       this.$http.get('api/listing/tags')
@@ -409,7 +426,8 @@ export default {
     },
     setCompleted() {
       if (!this.firstDialogCompleted) {
-        return this.firstDialogCompleted = true;
+        this.firstDialogCompleted = true;
+        this.createListing()
       }
 
       //omitting second dialog screen
