@@ -42,46 +42,7 @@
             </v-toolbar-items>
           </v-toolbar>
           <div class="listContainer">
-            <v-list class="miskit"
-                subheader
-            >
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Asukoht </v-list-item-title>
-                    <v-autocomplete
-                        v-model="value"
-                        :rules="[rules.required]"
-                        :items="region"
-                        dense
-                    />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Kohaletoimetamine </v-list-item-title>
-                  <p>{{ selected }}</p>
-                  <v-checkbox
-                      v-model="selected"
-                      label="Järeletulemisega"
-                      value="Pickup"
-                  ></v-checkbox>
-                  <v-checkbox
-                      v-model="selected"
-                      label="Saatmisega"
-                      value="Shipping"
-                  ></v-checkbox>
-                </v-list-item-content>
-              </v-list-item>
-                <v-list-item style="margin-top: 50px">
-                  <v-text-field style="margin-top: 50px"
-                                v-model="value3"
-                                label="Lisainfo"
-                                placeholder="Tarneaeg, kaubapäev, tarne reeglid jms."
-                                counter
-                                maxlength="200"
-                  ></v-text-field>
-                </v-list-item>
-              </v-list>
+
 
             <img :scr="image"/>
 
