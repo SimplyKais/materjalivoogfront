@@ -149,7 +149,7 @@
 
               <v-combobox style="padding: 8px 0px"
                           multiple
-                          v-model="select"
+                          v-model="selectTags"
                           label="Märksõnad"
                           append-icon
                           chips
@@ -189,7 +189,7 @@
                         <v-list-item-content>
                           <v-list-item-title>* Ühik</v-list-item-title>
                           <v-autocomplete
-                              v-model="value"
+                              v-model="unit"
                               :rules="[rules.required]"
                               :items="['/m', '/kg']"
                               dense
@@ -215,6 +215,7 @@
                         md="5"
                     >
                       <v-text-field
+                          v-model="discountPrice"
                           label="Soodushind"
                       ></v-text-field>
                     </v-col>€
@@ -224,6 +225,7 @@
                         sm="6"
                         md="5">
                       <v-text-field
+                          v-model="discountPercentage"
                           label="Allahindlus %"
                       ></v-text-field>
                     </v-col>%
@@ -233,6 +235,7 @@
                         sm="6"
                         md="5">
                       <v-text-field
+                          v-model="inventory"
                           label="Laojääk"
                       ></v-text-field>
                     </v-col>
@@ -279,12 +282,12 @@
                   <v-list-item-title>* Kohaletoimetamine </v-list-item-title>
                   <p>{{ selected }}</p>
                   <v-checkbox
-                      v-model="selected"
+                      v-model="pickupSelected"
                       label="Järeletulemisega"
                       value="Pickup"
                   ></v-checkbox>
                   <v-checkbox
-                      v-model="selected"
+                      v-model="shippingSelected"
                       label="Saatmisega"
                       value="Shipping"
                   ></v-checkbox>
@@ -332,21 +335,28 @@ export default {
       forthDialogCompleted: false,
       fifthDialogCompleted: false,
       isProceedingDisabled: true,
-      select: '',
+      selectTags: '',
       updateTags: '',
-      search: '',
       dialog: '',
       valueOfCategory: '',
       valueOfSubcategory: '',
       valueOfDeadstock: '',
       valueOfTitle: '',
       valueOfDescription1: '',
+      price: '',
+      unit: '',
       valueOfDescription2: '',
+      discountPrice: '',
+      discountPercentage: '',
+      inventory: '',
       valueOfInStock: '',
       valueOfRegion: '',
+      pickupSelected: '',
+      shippingSelected: '',
       valueOfRestrictionDescription: '',
       items: [],
       image: '',
+      search: '',
       categories: [],
       subcategories: [],
       rules: {
@@ -354,6 +364,8 @@ export default {
       },
       selectedFile: null,
       pilt: [],
+      categoriesResponse: [],
+      subcategoriesResponse:[],
     }
   },
   beforeMount() {
@@ -375,17 +387,20 @@ export default {
       this.$http.get('api/listing/categories')
           .then(result => {
             console.log('RES', result)
-            this.categories = result.data
+            this.categoriesResponse = result.data;
+            this.categories = result.data.map(item => item.name)
           })
           .catch(e => console.log('ERROR', e))
     },
     getSubcategories() {
       console.log("REQUESTING subcategories", this.valueOfCategory)
 
-      const id = this.categories.indexOf(this.valueOfCategory) + 1;
+      const id = this.categoriesResponse.find(item => item.name === this.valueOfCategory)?.categoryId;
+      console.log('subcagtegori id:', id)
       this.$http.get(`api/listing/selectsubcategories/${id}`)
           .then(result => {
             console.log('RES', result)
+            this.subcategoriesResponse = result.data;
             this.subcategories = result.data.map(item => item.name)
           })
           .catch(e => console.log('ERROR', e))
@@ -395,9 +410,10 @@ export default {
     },
 
     createListing() {
+      console.log('before create', this.categoriesResponse, this.subcategoriesResponse )
       const data = {
-        category: this.valueOfCategory,
-        subcategory: this.valueOfSubcategory,
+        category: this.categoriesResponse.find(item => item.name === this.valueOfCategory)?.categoryId,
+        subcategory: this.subcategoriesResponse.find(item => item.name === this.valueOfSubcategory)?.subcategoryId,
         deadStock: !!this.valueOfDeadstock,
       };
       console.log("POST DATA", data)
@@ -410,6 +426,29 @@ export default {
         category: this.valueOfCategory,
         subcategory: this.valueOfSubcategory,
         deadStock: !!this.valueOfDeadstock,
+      });
+    },
+
+    updateListingPg3() {
+      console.log("PUT DATA")
+      this.$http.put('api/listing/create/pg3/' + this.valueOfTitle + '/' + this.valueOfDescription1  + '/' + this.updateTags, {
+        title: this.valueOfTitle,
+        description1: this.valueOfDescription1,
+        tags: this.updateTags,
+      });
+    },
+
+    updateListingPg4() {
+      console.log("PUT DATA")
+      this.$http.put('api/listing/create/pg4/' + this.price + '/' + this.unit  + '/' + this.valueOfDescription2 + '/' + this.discountPrice + '/' + this.discountPercentage + '/' + this.inventory + '/' + this.valueOfInStock, {
+        price: this.price,
+        unit: this.unit,
+        Description2: this.valueOfDescription2,
+        discountPrice: this.discountPrice,
+        discountPercentage: this.discountPercentage,
+        inventory: this.inventory,
+        inStock: !!this.valueOfInStock,
+
       });
     },
 
