@@ -2,7 +2,8 @@
   <template>
 
 
-    <v-row justify="center">
+    <v-row>
+      >
       <v-dialog
           v-model="dialog"
           fullscreen
@@ -48,6 +49,7 @@
               border="top"
               color="orange darken-1"
               dark
+              v-if="isAlert"
           >
             Andmed salvestamata! Oled kindel, et soovid lahkuda lehelt?
             <br>
@@ -57,7 +59,7 @@
               <span>Lahku lehelt</span>
             </v-btn>
 
-            <v-btn  elevation="2" large class="grey lighten-2 black--text automargin">Jätka
+            <v-btn  elevation="2" large class="grey lighten-2 black--text automargin" v-on:click="warningOff">Jätka lehel
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
 
@@ -69,40 +71,45 @@
             <v-list v-if="!firstDialogCompleted" class="miskit"
                     subheader
             >
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Mis materjaliga on tegu? </v-list-item-title>
-                  <v-autocomplete
-                      v-model="valueOfCategory"
-                      :rules="[rules.required]"
-                      :items="categories"
-                      dense
-                      @change="getSubcategories"
-                  />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>Mis kujul see olemas on? </v-list-item-title>
-                  <v-autocomplete
-                      v-model="valueOfSubcategory"
-                      :items="subcategories"
-                      dense
-                  />
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item style="margin-top: 50px">
-                <v-list-item-content>
-                  <v-list-item-title>* Materjalisaadavus</v-list-item-title>
-                  <v-autocomplete
-                      v-model="valueOfDeadstock"
-                      :rules="[rules.required]"
-                      :items="['Lõplik kogus', 'Tekib jooksvalt juurde']"
-                      dense
-                  />
-                </v-list-item-content>
-              </v-list-item>
+              <div>
+                <v-list-item style="margin-top: 50px">
+                  <v-list-item-content>
+                    <v-list-item-title>* Mis materjaliga on tegu? </v-list-item-title>
+                    <v-autocomplete
+                        v-model="valueOfCategory"
+                        :rules="[rules.required]"
+                        :items="categories"
+                        dense
+                        @change="getSubcategories"
+                    />
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item style="margin-top: 50px">
+                  <v-list-item-content>
+                    <v-list-item-title>Mis kujul see olemas on? </v-list-item-title>
+                    <v-autocomplete
+                        v-model="valueOfSubcategory"
+                        :items="subcategories"
+                        dense
+                    />
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item style="margin-top: 50px">
+                  <v-list-item-content>
+                    <v-list-item-title>* Materjalisaadavus</v-list-item-title>
+                    <v-autocomplete
+                        v-model="valueOfDeadstock"
+                        :rules="[rules.required]"
+                        :items="['Lõplik kogus', 'Tekib jooksvalt juurde']"
+                        dense
+                    />
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
             </v-list>
+
+
+
 
             <v-list v-if="firstDialogCompleted && !secondDialogCompleted" class="miskit"
                     subheader>
@@ -281,16 +288,19 @@
                 <v-list-item-content>
                   <v-list-item-title>* Kohaletoimetamine </v-list-item-title>
                   <p>{{ selected }}</p>
+                  <v-list style="margin-top: 10px">
                   <v-checkbox
                       v-model="pickupSelected"
                       label="Järeletulemisega"
                       value="Pickup"
                   ></v-checkbox>
+
                   <v-checkbox
                       v-model="shippingSelected"
                       label="Saatmisega"
                       value="Shipping"
                   ></v-checkbox>
+                  </v-list>
                 </v-list-item-content>
               </v-list-item>
               <v-list-item style="margin-top: 50px">
@@ -304,8 +314,8 @@
               </v-list-item>
             </v-list>
 
-            <img :scr="image"/>
 
+            <img :src="require('../assets/Image.jpg')" style="margin-top: -90px; margin-left: 50px" height="700px" class="column2"/>
 
             <v-btn elevation="2" x-large class="blue-grey darken-4 white--text automargin" v-on:click="warning">
                 <v-icon>mdi-chevron-left</v-icon>
@@ -319,6 +329,7 @@
 
         </v-card>
       </v-dialog>
+
     </v-row>
   </template>
 
@@ -326,9 +337,10 @@
 <script>
 export default {
   name: "PopupDialogue",
-  components: { },
-  data () {
+  components: {},
+  data() {
     return {
+      isAlert: false,
       firstDialogCompleted: false,
       secondDialogCompleted: true,
       thirdDialogCompleted: false,
@@ -365,7 +377,7 @@ export default {
       selectedFile: null,
       pilt: [],
       categoriesResponse: [],
-      subcategoriesResponse:[],
+      subcategoriesResponse: [],
     }
   },
   beforeMount() {
@@ -396,7 +408,7 @@ export default {
       console.log("REQUESTING subcategories", this.valueOfCategory)
 
       const id = this.categoriesResponse.find(item => item.name === this.valueOfCategory)?.categoryId;
-      console.log('subcagtegori id:', id)
+      console.log('subcagtegory id:', id)
       this.$http.get(`api/listing/selectsubcategories/${id}`)
           .then(result => {
             console.log('RES', result)
@@ -406,11 +418,16 @@ export default {
           .catch(e => console.log('ERROR', e))
     },
     warning: function () {
-      alert("Andmed salvestamata! Oled kindel, et soovid lahkuda lehelt?");
+     // alert("Andmed salvestamata! Oled kindel, et soovid lahkuda lehelt?");
+      this.isAlert = true;
+    },
+    warningOff: function () {
+      // alert("Andmed salvestamata! Oled kindel, et soovid lahkuda lehelt?");
+      this.isAlert = false;
     },
 
     createListing() {
-      console.log('before create', this.categoriesResponse, this.subcategoriesResponse )
+      console.log('before create', this.categoriesResponse, this.subcategoriesResponse)
       const data = {
         category: this.categoriesResponse.find(item => item.name === this.valueOfCategory)?.categoryId,
         subcategory: this.subcategoriesResponse.find(item => item.name === this.valueOfSubcategory)?.subcategoryId,
@@ -421,8 +438,8 @@ export default {
     },
 
     updateListingPg1() {
-      console.log("PUT DATA")
-      this.$http.put('api/listing/create/pg1/' + this.valueOfCategory + '/' + this.valueOfSubcategory  + '/' + this.valueOfDeadstock, {
+      console.log("PUT DATApg1")
+      this.$http.put('api/listing/create/pg1/' + this.valueOfCategory + '/' + this.valueOfSubcategory + '/' + this.valueOfDeadstock, {
         category: this.valueOfCategory,
         subcategory: this.valueOfSubcategory,
         deadStock: !!this.valueOfDeadstock,
@@ -430,8 +447,8 @@ export default {
     },
 
     updateListingPg3() {
-      console.log("PUT DATA")
-      this.$http.put('api/listing/create/pg3/' + this.valueOfTitle + '/' + this.valueOfDescription1  + '/' + this.updateTags, {
+      console.log("PUT DATApg3")
+      this.$http.put('api/listing/create/pg3/' + this.valueOfTitle + '/' + this.valueOfDescription1 + '/' + this.updateTags, {
         title: this.valueOfTitle,
         description1: this.valueOfDescription1,
         tags: this.updateTags,
@@ -439,8 +456,8 @@ export default {
     },
 
     updateListingPg4() {
-      console.log("PUT DATA")
-      this.$http.put('api/listing/create/pg4/' + this.price + '/' + this.unit  + '/' + this.valueOfDescription2 + '/' + this.discountPrice + '/' + this.discountPercentage + '/' + this.inventory + '/' + this.valueOfInStock, {
+      console.log("PUT DATApg4")
+      this.$http.put('api/listing/create/pg4/' + this.price + '/' + this.unit + '/' + this.valueOfDescription2 + '/' + this.discountPrice + '/' + this.discountPercentage + '/' + this.inventory + '/' + this.valueOfInStock, {
         price: this.price,
         unit: this.unit,
         Description2: this.valueOfDescription2,
@@ -452,10 +469,20 @@ export default {
       });
     },
 
+    updateListingPg5() {
+      console.log("PUT DATApg5")
+      this.$http.put('api/listing/create/pg5/' + this.valueOfRegion + '/' + this.pickupSelected + '/' + this.shippingSelected + '/' + this.valueOfRestrictionDescription, {
+        valueOfRegion: this.valueOfRegion,
+        pickupSelected: this.pickupSelected,
+        shippingSelected: this.shippingSelected,
+        valueOfRestrictionDescription: this.valueOfRestrictionDescription,
 
-    getTags () {
+      });
+    },
+
+    getTags() {
       this.$http.get('api/listing/tags')
-          .then (result => this.tags = result.data)
+          .then(result => this.tags = result.data)
     },
     onFileSelected() {
       console.log(this.pilt)
@@ -497,13 +524,13 @@ export default {
         if (this.title && this.description_1 && this.tags) this.isProceedingDisabled = false;
       }
     },
-  }
+  },
 }
-
 
 </script>
 
 <style scoped>
+
 .miskit {
   padding: 0 50px 100px 50px;
 }
