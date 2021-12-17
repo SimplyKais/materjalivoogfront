@@ -466,7 +466,8 @@ export default {
     setCompleted() {
       if (!this.firstDialogCompleted) {
         this.firstDialogCompleted = true;
-        this.createListing()
+
+        return this.createListing();
       }
 
       //omitting second dialog screen
